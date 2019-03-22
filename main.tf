@@ -17,8 +17,6 @@ resource "fastly_service_v1" "hazip" {
     name = "${var.domain}"
   }
 
-  force_destroy = true
-
   vcl {
     name    = "main"
     main    = "true"
