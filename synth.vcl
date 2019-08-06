@@ -13,10 +13,7 @@ sub vcl_error {
         set obj.status = 200;
         set obj.response = "OK";
         set obj.http.Content-Type = "text/plain; charset=utf-8";
-        declare local var.ip_addr STRING;
-        set var.ip_addr = req.http.Fastly-Client-IP;
-        synthetic var.ip_addr {"
-"};
+        synthetic client.ip {""};
         return(deliver);
     }
 }
