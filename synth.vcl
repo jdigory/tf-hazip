@@ -4,10 +4,17 @@ backend default {
 
 sub vcl_recv {
 #FASTLY recv
-    if (req.url == "/geo") {
+  switch (req.url) {
+    case "/geo":
       error 902;
-    }
-    error 901;
+      break;
+    case "/epoch":
+      error 903;
+      break;
+    default:
+      error 901;
+      break;
+  }
 }
 
 sub vcl_error {
@@ -19,12 +26,18 @@ sub vcl_error {
         synthetic client.ip {""};
         return(deliver);
     }
-
-    if (obj.status == 902) {
+    else if (obj.status == 902) {
         set obj.status = 200;
         set obj.response = "OK";
         set obj.http.Content-Type = "text/plain; charset=utf-8";
         synthetic client.geo.city {""};
+        return(deliver);
+    }
+    else if (obj.status == 903) {
+        set obj.status = 200;
+        set obj.response = "OK";
+        set obj.http.Content-Type = "text/plain; charset=utf-8";
+        synthetic now.sec {""};
         return(deliver);
     }
 }
